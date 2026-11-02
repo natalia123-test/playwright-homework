@@ -5,26 +5,18 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Update pet type', async ({ page }) => {
-
     //change to rabbit
     await page.getByText('Pet Types').click()
-    await expect(page.getByRole('heading', { name: 'Pet Types' })).toHaveText('Pet Types');
-    await page.getByText('Edit').nth(0).click()
-    await expect(page.getByText('Edit Pet Type')).toHaveText('Edit Pet Type');
-    await page.getByRole('textbox').clear()
-    //wait for API call that loads pet data
-    await page.waitForResponse('**/api/pettypes/*');
+    await expect(page.getByRole('heading')).toHaveText('Pet Types');
+    await page.getByRole('row', { name: 'cat' }).getByRole('button', { name: 'Edit' }).click()
+    await expect(page.getByRole('heading')).toHaveText('Edit Pet Type')
+    await expect(page.getByRole('textbox')).toHaveValue('cat')
     await page.getByRole('textbox').fill('rabbit')
     await page.getByText('Update').click()
-    await expect(page.locator('[id="0"]')).toHaveValue('rabbit');
-
     //change again to cat
-    await page.getByText('Edit').nth(0).click()
-    await page.getByRole('textbox').clear()
-    //wait for API call that loads pet data
-    await page.waitForResponse('**/api/pettypes/*');
+    await page.getByRole('row', { name: 'rabbit' }).getByRole('button', { name: 'Edit' }).click()
+    await expect(page.getByRole('textbox')).toHaveValue('rabbit')
     await page.getByRole('textbox').fill('cat')
     await page.getByText('Update').click()
-    await expect(page.locator('[id="0"]')).toHaveValue('cat');
-
+    await expect(page.getByRole('row', { name: 'cat' })).toBeVisible()
 })
